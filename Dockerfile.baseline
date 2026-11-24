@@ -1,0 +1,18 @@
+# Baseline Unoptimized Dockerfile
+# Uses full python:3.11 Debian image (contains compilers, headers, apt cache, documentation)
+FROM python:3.11
+
+WORKDIR /app
+
+# Copy everything at once (defeats build caching)
+COPY . /app
+
+# Install dependencies without disabling pip cache
+RUN pip install -r requirements.txt
+
+EXPOSE 5000
+
+ENV FLASK_ENV=production
+ENV PYTHONUNBUFFERED=1
+
+CMD ["python", "app.py"]

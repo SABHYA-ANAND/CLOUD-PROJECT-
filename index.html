@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visitor Counter | Cloud & Hybrid Kubernetes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-card: #1e293b;
+            --border-color: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-blue: #38bdf8;
+            --accent-green: #22c55e;
+            --accent-amber: #f59e0b;
+            --accent-red: #ef4444;
+            --accent-purple: #a855f7;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 720px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .header h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+            margin-bottom: 24px;
+        }
+
+        .counter-section {
+            text-align: center;
+            padding: 20px 0 28px 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+
+        .counter-label {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .counter-value {
+            font-size: 4.5rem;
+            font-weight: 800;
+            color: var(--accent-blue);
+            line-height: 1;
+            margin-bottom: 12px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .grid-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .info-item {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px 16px;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .info-val {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            word-break: break-all;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-green {
+            background-color: rgba(34, 197, 94, 0.15);
+            color: var(--accent-green);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .badge-red {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: var(--accent-red);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .badge-env {
+            background-color: rgba(168, 85, 247, 0.15);
+            color: var(--accent-purple);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.15s ease-in-out;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-warning {
+            background-color: #d97706;
+            color: white;
+        }
+        .btn-warning:hover {
+            background-color: #b45309;
+        }
+
+        .btn-secondary {
+            background-color: #334155;
+            color: var(--text-primary);
+        }
+        .btn-secondary:hover {
+            background-color: #475569;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Visitor Counter</h1>
+            <p>Cloud-Native Kubernetes & Hybrid Architecture Showcase</p>
+        </div>
+
+        <div class="card">
+            <div class="counter-section">
+                <div class="counter-label">Total Visits Recorded</div>
+                <div class="counter-value" id="counter">{{ visitor_count if visitor_count >= 0 else 'ERR' }}</div>
+                <div class="status-indicator">
+                    {% if redis_status == 'Connected' %}
+                        <span class="badge badge-green">● Redis Connected</span>
+                    {% else %}
+                        <span class="badge badge-red">● Redis Error</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="grid-info">
+                <div class="info-item">
+                    <div class="info-label">Environment</div>
+                    <div class="info-val">
+                        <span class="badge badge-env">{{ environment }}</span>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">Cluster Name</div>
+                    <div class="info-val">{{ cluster_name }}</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">Serving Pod / Host</div>
+                    <div class="info-val"><code>{{ hostname }}</code></div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">Redis Host</div>
+                    <div class="info-val"><code>{{ redis_host }}</code></div>
+                </div>
+
+                <div class="info-item" style="grid-column: 1 / -1;">
+                    <div class="info-label">Last Checked Time</div>
+                    <div class="info-val">{{ timestamp }}</div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <a href="/" class="btn btn-primary">Refresh / New Visit</a>
+                <button onclick="triggerStress()" class="btn btn-warning" id="stressBtn">Trigger CPU Stress (HPA Test)</button>
+                <button onclick="resetCount()" class="btn btn-secondary">Reset Counter</button>
+            </div>
+            <div id="statusToast" style="margin-top: 14px; text-align: center; font-size: 0.85rem; color: var(--accent-amber); display: none;"></div>
+        </div>
+
+        <div class="footer">
+            Flask 3.1 &bull; Redis 5.2 &bull; Kubernetes Deployments &bull; HPA &bull; Hybrid Failover
+        </div>
+    </div>
+
+    <script>
+        async function triggerStress() {
+            const btn = document.getElementById('stressBtn');
+            const toast = document.getElementById('statusToast');
+            btn.disabled = true;
+            btn.innerText = 'Stressing CPU...';
+            toast.style.display = 'block';
+            toast.innerText = 'Generating CPU load (simulating heavy traffic spike)...';
+
+            try {
+                const res = await fetch('/cpu-stress?duration=1.0');
+                const data = await res.json();
+                toast.innerText = `CPU Stress done: ${data.iterations} hashing cycles in ${data.duration_seconds}s on ${data.hostname}`;
+            } catch (e) {
+                toast.innerText = 'Stress request failed: ' + e;
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Trigger CPU Stress (HPA Test)';
+            }
+        }
+
+        async function resetCount() {
+            if (confirm("Reset visitor counter to 0?")) {
+                await fetch('/reset', { method: 'POST' });
+                window.location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
